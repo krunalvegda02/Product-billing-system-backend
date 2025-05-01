@@ -8,13 +8,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
-    username:{
-        type: String,
-        required: true,
-        lowercase: true,
-        unique: true,
-        trim: true,
-        index: true,
+    username: {
+      type: String,
+      required: true,
+      lowercase: true,
+      unique: true,
+      trim: true,
+      index: true,
     },
     contact: {
       type: String,
@@ -32,13 +32,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    role: {
+      type: String,
+      enum: ["ADMIN", "MANAGER", "WAITER", "CUSTOMER"],
+      default: 'CUSTOMER',
+    },
     dob: {
       type: Date,
       required: true,
     },
+    deletedAt: { type: Date, default: null }, // Soft delete field
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 
