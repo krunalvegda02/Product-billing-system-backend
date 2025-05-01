@@ -15,6 +15,8 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       index: true,
+      minlength: 2,
+      maxlength: 100,
     },
     contact: {
       type: String,
@@ -87,5 +89,5 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 
-export const User = mongoose.model('User', userSchema);
-
+const User = mongoose.model('User', userSchema);
+export default User;
