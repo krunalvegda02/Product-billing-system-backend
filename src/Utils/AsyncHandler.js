@@ -10,7 +10,7 @@ export {asyncHandler};
 //? const asyncHandler = () => {() => {}}
 //? const asynshandler = () => () => {}
 
-// ?Another mothod
+//? Another mothod
 /*  
 const asyncHandler = (requstHandler) => 
     async (req,res,next) => {
