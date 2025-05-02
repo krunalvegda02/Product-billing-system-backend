@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import { DB_NAME } from "../Constants/db.constants.js";
-import app from "../app.js";
+import app from "../App.js";
 
 const connectDB = async () => {
   try {
     const connectionInstance = await mongoose.connect(
-      `${process.env.MONGODB_URI}/${DB_NAME}`
+      `${process.env.MONGODB_URI}`
     );
     app.on("error", () => {
       console.log("Express Error:", error);
