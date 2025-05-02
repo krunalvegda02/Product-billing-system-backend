@@ -12,7 +12,7 @@ import {
     userAvatarUpdate
 } from "../Controllers/user.controller.js";
 
-export const userRouter = Router();
+const userRouter = Router();
 
 userRouter.route(API.USER.REGISTER).post(registerUser);
 userRouter.route(API.USER.LOGIN).post(loginUser);
@@ -23,3 +23,4 @@ userRouter.route(API.USER.UPDATE_PROFILE).patch(verifyJWT, updateProfile);
 userRouter.route(API.USER.UPDATE_AVATAR).patch(verifyJWT, userAvatarUpdate);
 userRouter.route(API.USER.CURRENT_USER).get(verifyJWT, getCurrentUser);
 
+export default userRouter;

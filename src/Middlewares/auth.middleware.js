@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../Models/user.model.js";
 
 
-const verifyJWT = asyncHandler(async (req, res) => {
+const verifyJWT = asyncHandler(async (req, res, next) => {
     try {
         const token =
             req.cookies?.accessToken ||
@@ -16,7 +16,7 @@ const verifyJWT = asyncHandler(async (req, res) => {
 
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-        const user = await User.findOne(decodedToken?._id).select(
+        const user = await User.findOne({_id: decodedToken?._id}).select(
             "-password -refreshToken"
         );
         if (!user) throw new ApiError(403, "Invalid Credentials")

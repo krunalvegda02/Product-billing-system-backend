@@ -10,12 +10,13 @@ const generateAccessAndRefreshTokens = async (userId) => {
     const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
-    // console.log("refreshToken", refreshToken);
+    console.log("refreshToken", refreshToken);
     await user.save({ validateBeforeSave: false });
 
     return { accessToken, refreshToken };
 
   } catch (e) {
+    console.error("Token generation error:", e);
     throw new ApiError(
       500,
       "Something went wrong while generating Access and Refresh tokens"
@@ -23,6 +24,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
   }
 };
 
+// todo: API TESTING Is INCOMPLETE
 const refreshAccessToken = asyncHandler(
   async (req, res) => {
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
@@ -70,7 +72,12 @@ const refreshAccessToken = asyncHandler(
   });
 
 const loginUser = asyncHandler(async (req, res) => {
-  const { identifier, password } = req.body;
+  const { username, email, contact, password } = req.body;
+
+  const identifier = username || email || contact;
+  if (!identifier || !password) {
+    return res.status(400).json({ message: "Identifier and password are required" });
+  }
 
   const user = await User.findOne({
     $or: [
@@ -79,6 +86,8 @@ const loginUser = asyncHandler(async (req, res) => {
       { contact: identifier },
     ],
   });
+  console.log(user);
+
 
   if (!user) {
     return res.status(404).json({ message: 'User not found.' });
@@ -91,9 +100,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   //access and refresh token
-  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-    user._id
-  );
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
@@ -183,13 +190,12 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const updateProfile = asyncHandler(async (req, res) => {
-  const { username, contact, email, dob } = req.body;
+  const { username, contact, dob } = req.body;
   const userId = req.user._id;
 
   const updates = {};
   if (username !== undefined) updates.username = username;
   if (contact !== undefined) updates.contact = contact;
-  if (email !== undefined) updates.email = email;
   if (dob !== undefined) updates.dob = dob;
 
   if (Object.keys(updates).length === 0) {
@@ -220,16 +226,16 @@ const updateProfile = asyncHandler(async (req, res) => {
 
 // TODO
 const userAvatarUpdate = asyncHandler(async (req, res) => {
-
+  const newAvatar = req.file;
 })
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   const id = req.user._id;
 
-  const user = await user.findById(id);
+  const user = await User.findById(id);
 
-  const isCorrectPassword = await User.isPasswordCorrect(oldPassword);
+  const isCorrectPassword = await user.isPasswordCorrect(oldPassword);
   if (!isCorrectPassword) throw new ApiError(401, "Password incorrect");
 
   user.password = newPassword;
