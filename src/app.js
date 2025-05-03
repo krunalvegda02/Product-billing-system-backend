@@ -20,13 +20,19 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 
-import { userRouter, categoryRouter } from "./Routes/index.js"
+import {
+  userRouter,
+  categoryRouter,
+  productRouter,
+  orderRouter
+} from "./Routes/index.js"
 
 import { ROUTE } from "./Constants/endpoints.js"
 
-//Roues declaration
+//Routes declaration
 app.use(ROUTE.USER_ROUTER, userRouter);
 app.use(ROUTE.CATEGORY_ROUTER, categoryRouter);
-
+app.use(ROUTE.PRODUCT_ROUTER, productRouter);
+app.use(ROUTE.ORDER_ROUTER, orderRouter);
 
 export default app;

@@ -1,7 +1,8 @@
 const ROUTE = {
     USER_ROUTER: "/api/v1/users",
     PRODUCT_ROUTER: "/api/v1/products",
-    CATEGORY_ROUTER: "/api/v1/category"
+    CATEGORY_ROUTER: "/api/v1/category",
+    ORDER_ROUTER: "/api/v1/orders",
 }
 
 
@@ -19,7 +20,7 @@ const API = {
         CURRENT_USER: "/me"
     },
     PRODUCT: {
-        GET_ALL_PRODUCTS: "/",                 
+        GET_ALL_PRODUCTS: "/",
         CREATE_PRODUCT: "/create",
         DELETE_PRODUCT: "/delete/:id",
         UPDATE_PRODUCT: "/update/:id",
@@ -36,7 +37,8 @@ const API = {
         GET_ALL_ORDER: "/",
         CREATE_ORDER: "/create",
         DELETE_ORDER: "/delete/:id",
-        UPDATE_ORDER: "/update/:id"
+        UPDATE_ORDER: "/update/:id",
+        GET_ORDERBY_ID: "/:id"
     }
 };
 
