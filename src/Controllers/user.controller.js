@@ -2,6 +2,7 @@ import { ApiError } from "../Utils/ApiError.js";
 import { asyncHandler } from "../Utils/AsyncHandler.js";
 import { User } from "../Models/index.js";
 import { ApiResponse } from "../Utils/ApiResponse.js";
+import { extractPublicIdFromUrl, deleteFromCloudinary, uploadOnCloudinary } from "../Utils/Cloudinary.js"
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -130,6 +131,7 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 })
 
+// Fr Customers
 const registerUser = asyncHandler(async (req, res) => {
   const { username, contact, email, password, dob } = req.body;
   if (
@@ -147,7 +149,6 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User already exists");
   }
 
-  // todo: role based registering of user, profile adding 
   const createUser = await User.create({
     username: username.toLowerCase(),
     email,
@@ -227,6 +228,25 @@ const updateProfile = asyncHandler(async (req, res) => {
 // TODO
 const userAvatarUpdate = asyncHandler(async (req, res) => {
   const newAvatar = req.file;
+  const id = req.user._id;
+
+  const user = await User.findById(id);
+  if (!user) throw new ApiError(404, "User not found");
+
+  if (newAvatar) {
+    try {
+      // If user has already old avatar then delete it
+      if (user.Avatar) {
+        const publicId = await extractPublicIdFromUrl(user.Avatar);
+        const deletedAvatar = await deleteFromCloudinary(publicId);
+        console.log("Avatar deleted", deletedAvatar);
+
+        if (!deletedAvatar) throw new ApiError(401, "Avatar not deleted")
+      }
+    } catch (error) {
+
+    }
+  }
 })
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
@@ -250,6 +270,10 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, req.user, "current user fetched succesfully"));
 })
 
+const createUserByAdmin = asyncHandler(async (req, res) => {
+  // todo: role based registering of user, profile adding 
+})
+
 export {
   refreshAccessToken,
   loginUser,
@@ -258,5 +282,6 @@ export {
   updateProfile,
   getCurrentUser,
   userAvatarUpdate,
-  changeCurrentPassword
+  changeCurrentPassword,
+  createUserByAdmin
 }

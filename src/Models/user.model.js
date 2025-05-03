@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
-    profile: {
+    Avatar: {
       type: String,
       default: '',
     },

@@ -6,8 +6,17 @@ const productSchema = new Schema(
             type: String,
             required: true
         },
+        description: {
+            type: String,
+            default: "",
+        },
         price: {
             type: Number,
+            required: true
+        },
+        inStock: {
+            type: Boolean,
+            default: true,
             required: true
         },
         thumbnail: {
@@ -17,6 +26,14 @@ const productSchema = new Schema(
         categoryOfProduct: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category"
+        },
+        isDiscountActive: {
+            type: Boolean,
+            default: false
+        },
+        ActiveDiscount: {
+            type: Number,
+            default: "0",
         }
     }, { timestamps: true }
 )
