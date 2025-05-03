@@ -86,9 +86,40 @@ const deleteCategory = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, deleted, MESSAGE.CATEGORY_DELETE_SUCCESS));
 });
 
-// TODO: pagination with fetching all categories
+//get all categories by pagination and sort
 const getAllCategories = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10, sortBy = "createdAt", sortType = "desc" } = req.query;
 
+    const sortOptions = {};
+    const validSortFields = ["createdAt", "updatedAt"];
+    const sortDirection = sortType === "asc" ? 1 : -1;
+
+    // Validate and set sort field
+    if (validSortFields.includes(sortBy)) {
+        sortOptions[sortBy] = sortDirection;
+    } else {
+        sortOptions["createdAt"] = -1; // default sort
+    }
+
+    const skip = (page - 1) * limit;
+
+    const categories = await Category.find()
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(parseInt(limit))
+        .select("-products"); // exclude products if not needed
+
+    const total = await Category.countDocuments();
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            total,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            totalPages: Math.ceil(total / limit),
+            categories,
+        }, MESSAGE.DATA_FETCHED_SUCCESS)
+    );
 });
 
 const getCategoryById = asyncHandler(async (req, res) => {

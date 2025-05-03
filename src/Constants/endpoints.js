@@ -19,7 +19,7 @@ const API = {
         CURRENT_USER: "/me"
     },
     PRODUCT: {
-        GET_ALL_PRODUCTS: "/",
+        GET_ALL_PRODUCTS: "/",                 
         CREATE_PRODUCT: "/create",
         DELETE_PRODUCT: "/delete/:id",
         UPDATE_PRODUCT: "/update/:id",
