@@ -8,12 +8,14 @@ const ROUTE = {
 const API = {
     USER: {
         REGISTER: "/register",
+        CREATE_USER: "/create-user",
         LOGIN: "/login",
         LOGOUT: '/logout',
         CHANGE_PASSWORD: "/change-password",
         UPDATE_PROFILE: "/update-profile",
         UPDATE_AVATAR: "/update-avatar",
         REFRESH_TOKEN: "/refresh-token",
+        GET_STAFF_MEMBERS: "/get-staff",
         CURRENT_USER: "/me"
     },
     PRODUCT: {

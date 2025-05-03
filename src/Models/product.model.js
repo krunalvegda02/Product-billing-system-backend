@@ -23,16 +23,18 @@ const productSchema = new Schema(
             type: String,
             required: true
         },
-        categoryOfProduct: {
+        categoryOfProduct: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category"
-        },
+        }],
         isDiscountActive: {
             type: Boolean,
             default: false
         },
         ActiveDiscount: {
             type: Number,
+            min: "0",
+            max: "100",
             default: "0",
         }
     }, { timestamps: true }

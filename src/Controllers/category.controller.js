@@ -3,6 +3,7 @@ import { ApiError } from "../Utils/ApiError.js";
 import { ApiResponse } from "../Utils/ApiResponse.js";
 import { asyncHandler } from "../Utils/AsyncHandler.js";
 import { uploadOnCloudinary, extractPublicIdFromUrl, deleteFromCloudinary } from "../Utils/Cloudinary.js";
+import MESSAGE from "../Constants/message.js";
 
 const createCategory = asyncHandler(async (req, res) => {
     const { categoryName } = req.body;
@@ -10,20 +11,20 @@ const createCategory = asyncHandler(async (req, res) => {
     // console.log('Name:', categoryName);
     // console.log('Thumbnail file:', categoryThumbnail);
 
-    if (!categoryName || !categoryThumbnail) throw new ApiError(401, "All Fields must required")
+    if (!categoryName || !categoryThumbnail) throw new ApiError(401, MESSAGE.ALL_FIELDS_MUST_REQUIRED);
 
     const uploadThumbnail = await uploadOnCloudinary(req.file?.path);
-    if (!uploadOnCloudinary) throw new ApiError(401, "Unable to upload thumbnail on cloudinary")
+    if (!uploadThumbnail?.url) throw new ApiError(401, MESSAGE.UPLOAD_CLOUDINARY_ERROR);
     // console.log("uploadOnCloudinary", uploadOnCloudinary);
 
     const category = await Category.create({
         categoryName: categoryName,
         categoryThumbnail: uploadThumbnail.url
     });
-    if (!category) throw new ApiError(401, "Unable to create category");
+    if (!category) throw new ApiError(401, MESSAGE.CATEGORY_CREATE_FAILED);
 
-    return res.status(200).json(new ApiResponse(200, category, "Category Created Succesfully"))
-})
+    return res.status(200).json(new ApiResponse(200, category, MESSAGE.CATEGORY_CREATE_SUCCESS));
+});
 
 const updateCategory = asyncHandler(async (req, res) => {
     const { newCategoryName } = req.body;
@@ -31,7 +32,7 @@ const updateCategory = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const category = await Category.findById(id);
-    if (!category) throw new ApiError(404, "Category not found");
+    if (!category) throw new ApiError(404, MESSAGE.CATEGORY_NOT_FOUND);
 
     if (newCategoryName) category.categoryName = newCategoryName;
 
@@ -40,63 +41,63 @@ const updateCategory = asyncHandler(async (req, res) => {
             // Delete old thumbnail from Cloudinary
             if (category.categoryThumbnail) {
                 const publicId = extractPublicIdFromUrl(category.categoryThumbnail);
-                if (!publicId) throw new ApiError(400, "Invalid public ID extracted from old thumbnail URL");
+                if (!publicId) throw new ApiError(400, MESSAGE.CLOUDINARY_PUBLIC_ID_INVALID);
 
                 await deleteFromCloudinary(publicId);
             }
 
             // uploading new thumbnail
             const uploadNewThumbnail = await uploadOnCloudinary(newCategoryThumbnail?.path);
-            if (!uploadNewThumbnail?.url) throw new ApiError(401, "Unable to upload thumbnail on cloudinary");
+            if (!uploadNewThumbnail?.url) throw new ApiError(401, MESSAGE.UPLOAD_CLOUDINARY_ERROR);
 
             category.categoryThumbnail = uploadNewThumbnail.url;
         } catch (error) {
             console.error("Thumbnail update error:", error);
-            throw new ApiError(500, "Unable to Update Thumbnail of Category")
+            throw new ApiError(500, MESSAGE.THUMBNAIL_UPDATE_FAILED);
         }
     }
 
     await category.save();
 
-    return res.status(200).json(new ApiResponse(200, category, "Category Updated Succesfully"));
-})
+    return res.status(200).json(new ApiResponse(200, category, MESSAGE.CATEGORY_UPDATE_SUCCESS));
+});
 
 const deleteCategory = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const category = await Category.findById(id);
-    if (!category) throw new ApiError(400, "Category Not Found");
+    if (!category) throw new ApiError(400, MESSAGE.CATEGORY_NOT_FOUND);
 
     // deleting cloudinary thumbnail
     try {
         if (category.categoryThumbnail) {
             const publicId = extractPublicIdFromUrl(category.categoryThumbnail);
-            if (!publicId) throw new ApiError(400, "Invalid public ID extracted from old thumbnail URL");
+            if (!publicId) throw new ApiError(400, MESSAGE.CLOUDINARY_PUBLIC_ID_INVALID);
 
             await deleteFromCloudinary(publicId);
         }
     } catch (error) {
         console.log("Error while deleting thumbnail in CLoudinary", error);
-        throw new ApiError(500, "Error while deleting thumbnail in CLoudinary")
+        throw new ApiError(500, MESSAGE.CLOUDINARY_DELETE_FAILED);
     }
 
     const deleted = await category.deleteOne();
 
-    return res.status(200).json(new ApiResponse(200, deleted, "Category Deleted Succesfully"));
-})
+    return res.status(200).json(new ApiResponse(200, deleted, MESSAGE.CATEGORY_DELETE_SUCCESS));
+});
 
 // TODO: pagination with fetching all categories
 const getAllCategories = asyncHandler(async (req, res) => {
 
-})
+});
 
 const getCategoryById = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const categoryById = await Category.findById(id);
-    if (!categoryById) throw new ApiError(404, "category not found");
+    if (!categoryById) throw new ApiError(404, MESSAGE.CATEGORY_NOT_FOUND);
 
-    return res.status(200).json(200, categoryById, "Category Fetched Succesfully")
-})
+    return res.status(200).json(new ApiResponse(200, categoryById, MESSAGE.CATEGORY_FETCH_SUCCESS));
+});
 
-export { createCategory, deleteCategory, getAllCategories, updateCategory, getCategoryById }
+export { createCategory, deleteCategory, getAllCategories, updateCategory, getCategoryById };
