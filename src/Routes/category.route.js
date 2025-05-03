@@ -7,7 +7,7 @@ const categoryRouter = Router();
 
 categoryRouter.route(API.CATEGORY.CREATE_CATEGORY).post(upload.single("categoryThumbnail"), createCategory);
 categoryRouter.route(API.CATEGORY.UPDATE_CATEGORY).patch(upload.single("newCategoryThumbnail"), updateCategory);
-categoryRouter.route(API.CATEGORY.DELETE_CATEGORY).post(deleteCategory);
+categoryRouter.route(API.CATEGORY.DELETE_CATEGORY).delete(deleteCategory);
 categoryRouter.route(API.CATEGORY.GET_ALL_CATEGORY).get(getAllCategories);
 categoryRouter.route(API.CATEGORY.GET_CATEGORYBY_ID).get(getCategoryById);
 
