@@ -41,12 +41,11 @@ const userSchema = new mongoose.Schema(
     },
     dob: {
       type: Date,
-      required: true,
+      // required: true,
     },
     refreshToken: {
       type: String
     },
-    deletedAt: { type: Date, default: null }, // Soft delete field
   },
   {
     timestamps: true,
