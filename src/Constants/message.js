@@ -30,6 +30,7 @@ const MESSAGE = {
     PRODUCT_DELETE_SUCCESS: "Product deleted successfully.",
     PRODUCT_NOT_FOUND: "Product not found.",
     PRODUCT_ALREADY_EXISTS: "Product already exists.",
+    PRODUCT_FOUND_SUCCESS : "Product Feteched Successfully",
 
     // Category Messages
     CATEGORY_CREATE_SUCCESS: "Category created successfully.",
