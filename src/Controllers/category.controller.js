@@ -28,6 +28,8 @@ const createCategory = asyncHandler(async (req, res) => {
 
 const updateCategory = asyncHandler(async (req, res) => {
     const { newCategoryName } = req.body;
+    // console.log("body",req.body);
+
     const newCategoryThumbnail = req.file;
     const { id } = req.params;
 
