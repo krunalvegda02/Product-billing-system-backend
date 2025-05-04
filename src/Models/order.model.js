@@ -1,4 +1,5 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
+import MESSAGE from "../Constants/message.js";
 
 const orderSchema = new mongoose.Schema({
     menuItems: [
@@ -20,17 +21,23 @@ const orderSchema = new mongoose.Schema({
     },
     tip: {
         type: Number,
+        default: 0,
     },
     referral: {
-        type: String
+        type: String,
+        default: null
     },
     discount: {
-        type: Number
+        type: Number,
+        default: 0,
+        minlength: [0, MESSAGE.ENTER_VALID_DISCOUNT],
+        maxlength: [100, MESSAGE.ENTER_VALID_DISCOUNT],
     },
     paymentId: {
         type: String,
         // required: true,
-    },    paymentMethod: {
+    },
+    paymentMethod: {
         type: String,
         enum: ["Card", "UPI", "Cash", "Other"],
         default: "UPI",
@@ -47,7 +54,7 @@ const orderSchema = new mongoose.Schema({
     // total: {
     //     type: Number,
     //     required: true
-    // }                 Removes total because we will use aggregate to gave total instead of storing its value
+    // }
 }, { timestamps: true })
 
 const Order = mongoose.model("Order", orderSchema);

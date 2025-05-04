@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import MESSAGE from '../Constants/message.js';
 
 const userSchema = new mongoose.Schema(
   {
@@ -11,28 +12,30 @@ const userSchema = new mongoose.Schema(
     username: {
       type: String,
       required: true,
-      lowercase: true,
+      uppercase: true,
       unique: true,
       trim: true,
       index: true,
-      minlength: 2,
-      maxlength: 100,
+      minlength: [2 , MESSAGE.ENTER_VALID_USERNAME],
+      maxlength: [100 , MESSAGE.ENTER_VALID_USERNAME],
     },
     contact: {
       type: String,
       required: true,
       unique: true,
+      length:[10, [100 , MESSAGE.ENTER_VALID_CONTACT]]
     },
     email: {
       type: String,
       required: true,
       unique: true,
-      lowercase: true,
       trim: true,
     },
     password: {
       type: String,
       required: true,
+      minlength:4,
+      maxlength:10,
     },
     role: {
       type: String,

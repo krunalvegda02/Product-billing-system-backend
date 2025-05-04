@@ -20,8 +20,12 @@ const MESSAGE = {
     ORDER_CREATE_FAILED: "Failed to create order.",
     ORDER_UPDATE_SUCCESS: "Order updated successfully.",
     ORDER_DELETE_SUCCESS: "Order deleted successfully.",
+    ORDER_DELETE_FAILED: "Order deletion failed",
+    ORDER_FOUND_SUCCESS: "Order Fetched successfully",
     ORDER_NOT_FOUND: "Order not found.",
     ORDER_STATUS_UPDATED: "Order status updated successfully.",
+    COMPLETED_ORDER_UPDATE_ERROR: "Your Order was Completed, Changes can't be applied on Completed Order",
+
 
     // Product Messages
     PRODUCT_CREATE_SUCCESS: "Product created successfully.",
@@ -30,7 +34,7 @@ const MESSAGE = {
     PRODUCT_DELETE_SUCCESS: "Product deleted successfully.",
     PRODUCT_NOT_FOUND: "Product not found.",
     PRODUCT_ALREADY_EXISTS: "Product already exists.",
-    PRODUCT_FOUND_SUCCESS : "Product Feteched Successfully",
+    PRODUCT_FOUND_SUCCESS: "Product Feteched Successfully",
 
     // Category Messages
     CATEGORY_CREATE_SUCCESS: "Category created successfully.",
@@ -58,7 +62,16 @@ const MESSAGE = {
     OPERATION_SUCCESS: "Operation completed successfully.",
     DATA_FETCHED_SUCCESS: "Data fetched successfully.",
     DATA_UPDATED_SUCCESS: "Data updated successfully.",
-    DATA_DELETED_SUCCESS: "Data deleted successfully."
+    DATA_DELETED_SUCCESS: "Data deleted successfully.",
+
+    // Error message for User Model
+    ENTER_VALID_CONTACT: "Please enter valid contact no.",
+    ENTER_VALID_USERNAME: "Please enter username between 2-100 characters",
+    ENTER_VALID_PASSWORD: "Please enter password between 4-10 characters",
+
+    // Error message for Orers Model
+    ENTER_VALID_DISCOUNT: "Please enter discount between 0-100 percent",
+
 };
 
 export default MESSAGE;

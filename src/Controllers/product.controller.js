@@ -8,7 +8,8 @@ import { deleteFromCloudinary, extractPublicIdFromUrl, uploadOnCloudinary } from
 const createProduct = asyncHandler(async (req, res) => {
     const { name, description, price, inStock, categoryOfProduct, isDiscountActive, ActiveDiscount } = req.body;
     const thumbnail = req.file;
-    // console.log(thumbnail);
+    console.log(thumbnail, req.body);
+
 
     if (
         !name || !description || !price || !inStock ||
