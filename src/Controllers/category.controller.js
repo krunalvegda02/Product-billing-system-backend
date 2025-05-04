@@ -93,7 +93,7 @@ const getAllCategories = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, sortBy = "createdAt", sortType = "desc" } = req.query;
 
     const sortOptions = {};
-    const validSortFields = ["createdAt", "updatedAt"];
+    const validSortFields = ["createdAt", "updatedAt", "categoryName"];
     const sortDirection = sortType === "asc" ? 1 : -1;
 
     // Validate and set sort field

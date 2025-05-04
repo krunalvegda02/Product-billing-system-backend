@@ -48,6 +48,8 @@ const updateProduct = asyncHandler(async (req, res) => {
     const { name, description, price, inStock, categoryOfProduct, isDiscountActive, ActiveDiscount } = req.body;
     const thumbnail = req.file;
     const { id } = req.params;
+    console.log(req.body, req.file);
+
 
     // ! tu frontend mathi everytime thumbnail mokalish every time api ma??? enathi cloudinary and database 
     // ! par load pade to if na mokalvu hoy to validation mathi hatai deje niche nu logic to brorbr j rese  
@@ -147,7 +149,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, sortBy = "createdAt", sortType = "desc" } = req.query;
 
     const sortOptions = {};
-    const validSortFields = ["createdAt", "updatedAt"];
+    const validSortFields = ["createdAt", "updatedAt", "name"];
     const sortDirection = sortType === "asc" ? 1 : -1;
 
     // Validate and set sort field

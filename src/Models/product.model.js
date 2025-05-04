@@ -25,7 +25,8 @@ const productSchema = new Schema(
         },
         categoryOfProduct: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Category"
+            ref: "Category",
+            unique: true
         }],
         isDiscountActive: {
             type: Boolean,

@@ -99,7 +99,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 // Soft delete on clicking on delete button in frontend
 // TODO: implementation of auto soft delete After some time
 const deleteOrder = asyncHandler(async (req, res) => {
-    const { id } = req.param;
+    const { id } = req.params;
 
     const order = await Order.findByIdAndUpdate(id, { deletedAt: new Date() });
     if (!order) throw new ApiError(400, MESSAGE.ORDER_DELETE_FAILED);
@@ -119,7 +119,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
     if (validSortFields.includes(sortBy)) {
         sortOptions[sortBy] = sortDirection;
     } else {
-        sortOptions["createdAt"] = -1; // default sort
+        sortOptions["createdAt"] = -1; 
     }
 
     const skip = (page - 1) * limit;

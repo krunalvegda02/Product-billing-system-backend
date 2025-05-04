@@ -11,5 +11,6 @@ categoryRouter.route(API.CATEGORY.DELETE_CATEGORY).delete(deleteCategory);
 categoryRouter.route(API.CATEGORY.GET_ALL_CATEGORY).get(getAllCategories);
 categoryRouter.route(API.CATEGORY.GET_CATEGORYBY_ID).get(getCategoryById);
 
+// http://localhost:8000/api/v1/category/?page=1&limit=10&sortBy=categoryName&sortType=asc
 
 export default categoryRouter;
