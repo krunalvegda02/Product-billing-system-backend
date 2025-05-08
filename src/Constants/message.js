@@ -12,6 +12,9 @@ const MESSAGE = {
     INVALID_TOKEN: "Invalid or expired token.",
     ACCESS_DENIED: "Access denied.",
 
+    ADMIN_REGISTER_SUCCESS:"Admin Registered succesfully",
+    ADMIN_REGISTER_FAILED:"Admin Registerd Failed",
+
     STAFFMEMBERS_FETCH_FAILED: "Failed to Fetch Staff members",
     STAFFMEMBERS_FETCH_SUCCESS: "Staff members Fetched Successfully",
 
