@@ -1,7 +1,5 @@
-import { registerUser } from "../Controllers/user.controller.js";
 import { User } from "../Models/index.js";
 import { ApiError } from "./ApiError.js";
-import { ApiResponse } from "./ApiResponse.js";
 import MESSAGE from "../Constants/message.js";
 
 export const createAdmin = async () => {
