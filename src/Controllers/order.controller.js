@@ -22,9 +22,26 @@ const createOrder = asyncHandler(async (req, res) => {
     }
 
     const products = await Product.find({ _id: { $in: menuItems } });
+    console.log("products", products);
+
     let Total = 0;
-    const calculateTotal = products.map(product => Total += product.price);
-    // console.log("pro", products);
+
+    const productWithDiscount = products.map(product => {
+        let discountedPrice = product.price;
+
+        if (product.isDiscountActive && product.ActiveDiscount > 0) {
+            discountedPrice = product.price - (product.price * product.ActiveDiscount / 100);
+        }
+
+        Total += discountedPrice;
+
+        return {
+            _id: product._id,
+            name: product.name,
+            originalPrice: product.price,
+            discountedPrice
+        };
+    });
     console.log("total", Total);
 
     const order = await Order.create({
@@ -41,9 +58,11 @@ const createOrder = asyncHandler(async (req, res) => {
     if (!order) throw new ApiError(500, MESSAGE.ORDER_CREATE_FAILED);
 
     const savedOrder = await Order.findById(order._id)
-        .populate("menuItems", "name price")
         .populate("customer", "name email contact avatar")
-        .populate("served_by", "name email contact avatar");
+        .populate("served_by", "name email contact avatar")
+        .lean();
+
+    savedOrder.menuItems = productWithDiscount;
 
     return res.status(200).json(new ApiResponse(200, { savedOrder, Total }, MESSAGE.ORDER_CREATE_SUCCESS))
 });
@@ -91,7 +110,39 @@ const getOrderById = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const order = await Order.findById(id)
+        .populate("customer", "name email contact avatar")
+        .populate("served_by", "name email contact avatar")
+        .populate({
+            path: "menuItems",
+            populate: {
+                path: "categoryOfProduct",
+                select: "categoryName categoryThumbnail",
+            },
+            select: "name description price isDiscountActive ActiveDiscount categoryOfProduct", // Only important fields
+        })
+        .lean();
     if (!order) throw new ApiError(401, MESSAGE.ORDER_NOT_FOUND);
+
+    const menuItems = await Product.find({ _id: { $in: order.menuItems } }).populate("_id name description price").lean();
+    console.log(menuItems);
+
+    if (order.menuItems.isDiscountActive) {
+        const menuItemsWithDiscountedPrice = order.menuItems.map(item => {
+            let discountedPrice = item.price;
+            if (item.isDiscountActive && item.ActiveDiscount > 0) {
+                discountedPrice = item.price - (item.price * item.ActiveDiscount / 100);
+            }
+            return {
+                ...item,
+                originalPrice: item.price,
+                discountedPrice: parseFloat(discountedPrice.toFixed(2))
+            };
+        });
+
+        console.log("menuItemsWithDiscountedPrice", menuItemsWithDiscountedPrice);
+        order.menuItems = menuItemsWithDiscountedPrice;
+    }
+
 
     return res.status(200).json(new ApiResponse(200, order, MESSAGE.ORDER_FOUND_SUCCESS))
 });
@@ -107,7 +158,6 @@ const deleteOrder = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, MESSAGE.ORDER_DELETE_SUCCESS));
 })
 
-// get orders by sorting, 
 const getAllOrders = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, sortType = "desc", sortBy = "createdAt" } = req.query;
 
@@ -119,7 +169,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
     if (validSortFields.includes(sortBy)) {
         sortOptions[sortBy] = sortDirection;
     } else {
-        sortOptions["createdAt"] = -1; 
+        sortOptions["createdAt"] = -1;
     }
 
     const skip = (page - 1) * limit;

@@ -161,12 +161,23 @@ const getAllProducts = asyncHandler(async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const products = await Product.find()
+    const productsFromDB = await Product.find()
         .sort(sortOptions)
         .skip(skip)
         .limit(parseInt(limit))
         .select("-categoryOfProduct");
 
+    const products = productsFromDB.map(product => {
+        const productObj = product.toObject();
+
+        if (product.isDiscountActive && product.ActiveDiscount > 0) {
+            productObj.discountedPrice = product.price - (product.price * product.ActiveDiscount / 100);
+        } else {
+            productObj.discountedPrice = product.price;
+        }
+
+        return productObj;
+    });
     const total = await Product.countDocuments();
 
     return res.status(200).json(
@@ -186,7 +197,12 @@ const getProductById = asyncHandler(async (req, res) => {
     const product = await Product.findById(id);
     if (!product) throw new ApiError(401, MESSAGE.PRODUCT_NOT_FOUND);
 
-    return res.status(200).json(new ApiResponse(200, product, MESSAGE.PRODUCT_FOUND_SUCCESS))
+    const productObj = product.toObject();
+    if (product.isDiscountActive) {
+        productObj.discountedPrice = product.price - (product.price * product.ActiveDiscount / 100);
+    }
+    
+    return res.status(200).json(new ApiResponse(200, { product: productObj }, MESSAGE.PRODUCT_FOUND_SUCCESS))
 })
 
 export {
