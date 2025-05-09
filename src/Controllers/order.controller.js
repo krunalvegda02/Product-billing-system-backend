@@ -4,6 +4,8 @@ import { ApiError } from "../Utils/ApiError.js";
 import { ApiResponse } from "../Utils/ApiResponse.js";
 import { asyncHandler } from "../Utils/AsyncHandler.js";
 
+
+// note: handle inStock orders in frontend {no validation here}, send me only instock menuItems
 const createOrder = asyncHandler(async (req, res) => {
     const {
         menuItems,
