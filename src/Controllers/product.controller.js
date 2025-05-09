@@ -172,8 +172,6 @@ const getAllProducts = asyncHandler(async (req, res) => {
 
         if (product.isDiscountActive && product.ActiveDiscount > 0) {
             productObj.discountedPrice = product.price - (product.price * product.ActiveDiscount / 100);
-        } else {
-            productObj.discountedPrice = product.price;
         }
 
         return productObj;
@@ -201,7 +199,7 @@ const getProductById = asyncHandler(async (req, res) => {
     if (product.isDiscountActive) {
         productObj.discountedPrice = product.price - (product.price * product.ActiveDiscount / 100);
     }
-    
+
     return res.status(200).json(new ApiResponse(200, { product: productObj }, MESSAGE.PRODUCT_FOUND_SUCCESS))
 })
 

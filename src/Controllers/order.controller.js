@@ -84,12 +84,12 @@ const updateOrder = asyncHandler(async (req, res) => {
     const order = await Order.findById(id);
     if (!order) throw new ApiError(401, MESSAGE.ORDER_NOT_FOUND);
 
-    if (order.status === "Completed") throw new ApiError(401, MESSAGE.COMPLETED_ORDER_UPDATE_ERROR);
+    // if (order.status === "Completed") throw new ApiError(401, MESSAGE.COMPLETED_ORDER_UPDATE_ERROR);
 
-    // If status is Failed, mark as soft deleted
-    if (status === "Failed") {
-        order.deletedAt = new Date();
-    }
+    // // If status is Failed, mark as soft deleted
+    // if (status === "Failed") {
+    //     order.deletedAt = new Date();
+    // }
 
     if (menuItems) order.menuItems = menuItems;
     if (customer) order.customer = customer;
@@ -178,6 +178,16 @@ const getAllOrders = asyncHandler(async (req, res) => {
         .sort(sortOptions)
         .skip(skip)
         .limit(parseInt(limit))
+        .populate("customer", "name email contact avatar")
+        .populate("served_by", "name email contact avatar")
+        .populate({
+            path: "menuItems",
+            populate: {
+                path: "categoryOfProduct",
+                select: "categoryName categoryThumbnail",
+            },
+            select: "name description price isDiscountActive ActiveDiscount categoryOfProduct", // Only important fields
+        })
 
     const total = await Order.countDocuments();
 
