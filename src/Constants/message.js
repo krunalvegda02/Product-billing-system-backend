@@ -12,8 +12,8 @@ const MESSAGE = {
     INVALID_TOKEN: "Invalid or expired token.",
     ACCESS_DENIED: "Access denied.",
 
-    ADMIN_REGISTER_SUCCESS:"Admin Registered succesfully",
-    ADMIN_REGISTER_FAILED:"Admin Registerd Failed",
+    ADMIN_REGISTER_SUCCESS: "Admin Registered succesfully",
+    ADMIN_REGISTER_FAILED: "Admin Registerd Failed",
 
     STAFFMEMBERS_FETCH_FAILED: "Failed to Fetch Staff members",
     STAFFMEMBERS_FETCH_SUCCESS: "Staff members Fetched Successfully",
@@ -38,6 +38,10 @@ const MESSAGE = {
     PRODUCT_NOT_FOUND: "Product not found.",
     PRODUCT_ALREADY_EXISTS: "Product already exists.",
     PRODUCT_FOUND_SUCCESS: "Product Feteched Successfully",
+    PRODUCTS_BY_CATEGORY_SUCCESS: "Products fetched by category successfully.",
+
+    PRODUCT_UNLIKED_SUCCESS: "Product Liked successfully.",
+    PRODUCT_LIKED_SUCCESS: "Productunliked successfully.",
 
     // Category Messages
     CATEGORY_CREATE_SUCCESS: "Category created successfully.",

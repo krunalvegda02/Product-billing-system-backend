@@ -5,7 +5,7 @@ const ROUTE = {
     ORDER_ROUTER: "/api/v1/orders",
 }
 
-
+// TODO: FORGOT PASS API ENDPOINT CREATE
 const API = {
     USER: {
         REGISTER: "/register",
@@ -24,7 +24,11 @@ const API = {
         CREATE_PRODUCT: "/create",
         DELETE_PRODUCT: "/delete/:id",
         UPDATE_PRODUCT: "/update/:id",
-        GET_PRODUCTBY_ID: "/:id"
+        GET_PRODUCTBY_ID: "/:id",
+        GET_PRODUCTBY_CATEGORY: "/category/:categoryId",
+
+        TOGGLE_LIKE_PRODUCT: "/toggle-like/:id",
+        GET_LIKED_PRODUCTS: "/liked-products/:id"
     },
     CATEGORY: {
         GET_ALL_CATEGORY: "/",

@@ -189,6 +189,22 @@ const getAllProducts = asyncHandler(async (req, res) => {
     );
 })
 
+const getProductByCategory = asyncHandler(async (req, res) => {
+    const { categoryId } = req.params;
+    console.log("categoryId", categoryId);
+
+
+    const category = await Category.findById(categoryId).populate("products");
+    console.log("Category", category);
+
+    if (!category) throw new ApiError(404, MESSAGE.CATEGORY_NOT_FOUND);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { products: category.products }, MESSAGE.PRODUCTS_BY_CATEGORY_SUCCESS))
+
+})
+
 const getProductById = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -203,10 +219,44 @@ const getProductById = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { product: productObj }, MESSAGE.PRODUCT_FOUND_SUCCESS))
 })
 
+const getUserLikedProducts = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    const products = await Product.find({ likedBy: userId });
+    if (!products || products.length === 0) {
+        return res.status(404).json(new ApiResponse(404, [], MESSAGE.PRODUCT_NOT_FOUND));
+    }
+
+    return res.status(200).json(new ApiResponse(200, products, MESSAGE.DATA_FETCHED_SUCCESS));
+})
+
+const togglelikeProduct = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId);
+    if (!product) throw new ApiError(404, MESSAGE.PRODUCT_NOT_FOUND);
+
+    // Check if the user has already liked the product
+    const alreadyLiked = product.likedBy.includes(userId);
+    if (alreadyLiked) {
+        // If already liked, remove the user from likedBy
+        product.likedBy = product.likedBy.filter(id => id.toString() !== userId.toString());
+    } else {
+        // If not liked, add the user to likedBy
+        product.likedBy.push(userId);
+    }
+
+    return res.status(200).json(new ApiResponse(200, product, alreadyLiked ? MESSAGE.PRODUCT_UNLIKED_SUCCESS : MESSAGE.PRODUCT_LIKED_SUCCESS));
+})
+
 export {
     createProduct,
     deleteProduct,
     getAllProducts,
     updateProduct,
-    getProductById
+    getProductById,
+    getProductByCategory,
+    getUserLikedProducts,
+    togglelikeProduct
 }

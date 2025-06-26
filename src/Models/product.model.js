@@ -37,7 +37,11 @@ const productSchema = new Schema(
             min: "0",
             max: "100",
             default: "0",
-        }
+        },
+        likedBy: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }]
     }, { timestamps: true }
 )
 
