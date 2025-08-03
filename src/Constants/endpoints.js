@@ -20,7 +20,7 @@ const API = {
         CURRENT_USER: "/me"
     },
     PRODUCT: {
-        GET_ALL_PRODUCTS: "/",
+        GET_ALL_PRODUCTS: "/all",
         CREATE_PRODUCT: "/create",
         DELETE_PRODUCT: "/delete/:id",
         UPDATE_PRODUCT: "/update/:id",
@@ -28,7 +28,7 @@ const API = {
         GET_PRODUCTBY_CATEGORY: "/category/:categoryId",
 
         TOGGLE_LIKE_PRODUCT: "/toggle-like/:id",
-        GET_LIKED_PRODUCTS: "/liked-products/:id"
+        GET_LIKED_PRODUCTS: "/liked-products"
     },
     CATEGORY: {
         GET_ALL_CATEGORY: "/",
