@@ -2,10 +2,9 @@ const ROUTE = {
     USER_ROUTER: "/api/v1/users",
     PRODUCT_ROUTER: "/api/v1/products",
     CATEGORY_ROUTER: "/api/v1/category",
-    ORDER_ROUTER: "/api/v1/orders",
-}
+    ORDER_ROUTER: "/api/v1/order",
+};
 
-// TODO: FORGOT PASS API ENDPOINT CREATE
 const API = {
     USER: {
         REGISTER: "/register",
@@ -42,8 +41,11 @@ const API = {
         CREATE_ORDER: "/create",
         DELETE_ORDER: "/delete/:id",
         UPDATE_ORDER: "/update/:id",
-        GET_ORDERBY_ID: "/:id"
+        GET_ORDERBY_ID: "/:id",
+
+        UPDATE_ORDER_STATUS_BY_STAFF: "/update-status/:id",
+        UPDATE_ORDER_STATUS_BY_CUSTOMER: "/update-status-customer/:id"
     }
 };
 
-export { API, ROUTE }
+export { API, ROUTE };

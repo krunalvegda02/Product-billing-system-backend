@@ -47,6 +47,7 @@ const orderSchema = new mongoose.Schema({
         enum: ["Pending", "Preparing", "Ready", "Completed", "Failed", "Cancelled"],
         default: "Pending",
     },
+    isLocked: { type: Boolean, default: false },
     deletedAt: {
         type: Date,
         default: null,
