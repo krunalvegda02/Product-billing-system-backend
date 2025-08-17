@@ -314,15 +314,11 @@ const getAllStaffMembers = asyncHandler(async (req, res) => {
 
 // Get servant staff list
 const getServentStaffList = asyncHandler(async (req, res) => {
-  console.log("called");
-
 
   const servantStaff = await User.find({ role: "WAITER" });
   if (!servantStaff || servantStaff.length === 0) {
     return res.status(404).json(new ApiResponse(404, null, MESSAGE.SERVANT_LIST_NOT_FOUND));
   }
-
-  console.log("servant", servantStaff);
 
   return res.status(200).json(new ApiResponse(200, servantStaff, MESSAGE.SERVANT_LIST_FETCH_SUCCESS));
 })

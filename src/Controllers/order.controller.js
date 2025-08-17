@@ -32,6 +32,31 @@ const createOrder = asyncHandler(async (req, res) => {
         throw new ApiError(400, MESSAGE.PAYMENT_METHOD_REQUIRED);
     }
 
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // Find the last order of the day
+    const lastOrder = await Order.findOne({
+        createdAt: {
+            $gte: today,
+            $lt: tomorrow
+        }
+    }).sort({ orderId: -1 });
+    let orderNumber = 1
+
+    if (lastOrder && lastOrder.orderId) {
+        // Extract number from last order ID (ORD-123 → 123)
+        const lastNumber = parseInt(lastOrder.orderId.split('-')[1], 10);
+        if (!isNaN(lastNumber)) {
+            orderNumber = lastNumber + 1;
+        }
+    }
+    const orderId = `ORD-${orderNumber}`;
+
+
     // 2. Extract product IDs
     const productIds = menuItems.map(item => item.productId);
 
@@ -79,6 +104,7 @@ const createOrder = asyncHandler(async (req, res) => {
 
     // 6. Save order
     const order = await Order.create({
+        orderId,
         menuItems,
         customer,
         served_by,
@@ -87,7 +113,8 @@ const createOrder = asyncHandler(async (req, res) => {
         discount,
         paymentId,
         paymentMethod,
-        status
+        status,
+        total: Total.toFixed(2),
     });
 
     if (!order) {
@@ -106,7 +133,10 @@ const createOrder = asyncHandler(async (req, res) => {
     return res.status(201).json(
         new ApiResponse(
             201,
-            { savedOrder, Total: parseFloat(Total.toFixed(2)) },
+            {
+                savedOrder,
+                Total: parseFloat(Total.toFixed(2)),
+            },
             MESSAGE.ORDER_CREATE_SUCCESS
         )
     );
@@ -173,30 +203,34 @@ const updateOrderByCustomer = asyncHandler(async (req, res) => {
  */
 const updateOrderStatus = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { status, served_by } = req.body;
+    const { data } = req.body;
+    console.log(data);
+
 
     const order = await Order.findById(id);
     if (!order) throw new ApiError(404, MESSAGE.ORDER_NOT_FOUND);
 
     const allowedTransitions = {
-        Pending: ["Preparing", "Cancelled", "Failed"],
-        Preparing: ["Ready", "Failed"],
-        Ready: ["Completed", "Failed"],
-        Completed: [],
-        Failed: [],
-        Cancelled: []
+        PENDING: ["PREPARING", "CANCELLED", "FAILED"],
+        PREPARING: ["READY", "FAILED"],
+        READY: ["COMPLETED", "FAILED"],
+        COMPLETED: [],
+        FAILED: [],
+        CANCELLED: []
     };
 
-    if (!allowedTransitions[order.status].includes(status)) {
-        throw new ApiError(400, `Cannot change status from ${order.status} to ${status}`);
+
+    if (!allowedTransitions[order.status].includes(data.status)) {
+        throw new ApiError(400, `Cannot change status from ${order.status} to ${data.status}`);
     }
 
-    order.status = status;
-    if (served_by) order.served_by = served_by;
+    order.status = data.status;
+    if (data.served_by) order.served_by = data.served_by;
 
     await order.save();
     return res.status(200).json(new ApiResponse(200, order, MESSAGE.ORDER_STATUS_UPDATED));
 });
+
 
 
 
@@ -294,7 +328,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const orders = await Order.find({ status: { $ne: "Completed" } })
+    const orders = await Order.find({ status: { $ne: "COMPLETED" } })
         .sort(sortOptions)
         .skip(skip)
         .limit(parseInt(limit))

@@ -57,17 +57,22 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["Pending", "Preparing", "Ready", "Completed", "Failed", "Cancelled"],
-        default: "Pending",
+        enum: ["PENDING", "PREPARING", "READY", "COMPLETED", "FAILED", "CANCELLED"],
+        default: "PENDING",
     },
     isLocked: { type: Boolean, default: false },
     deletedAt: {
         type: Date,
         default: null,
     },
-    // total: {
+    total: {
+        type: Number,
+        required: true
+    },
+    // discountedPrice: {
     //     type: Number,
-    //     required: true
+    //     required: true,
+    //     default: 0
     // }
 }, { timestamps: true })
 
