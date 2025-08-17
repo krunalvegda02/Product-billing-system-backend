@@ -16,7 +16,8 @@ const API = {
         UPDATE_AVATAR: "/update-avatar",
         REFRESH_TOKEN: "/refresh-token",
         GET_STAFF_MEMBERS: "/get-staff",
-        CURRENT_USER: "/me"
+        CURRENT_USER: "/me",
+        GET_SERVANT_STAFF: "/get_servant_staff"
     },
     PRODUCT: {
         GET_ALL_PRODUCTS: "/all",
@@ -43,6 +44,7 @@ const API = {
         UPDATE_ORDER: "/update/:id",
         GET_ORDERBY_ID: "/:id",
 
+        CANCEL_ORDER: "/cancel/:id",
         UPDATE_ORDER_STATUS_BY_STAFF: "/update-status/:id",
         UPDATE_ORDER_STATUS_BY_CUSTOMER: "/update-status-customer/:id"
     }

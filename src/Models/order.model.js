@@ -2,11 +2,24 @@ import mongoose from "mongoose";
 import MESSAGE from "../Constants/message.js";
 
 const orderSchema = new mongoose.Schema({
+    orderId: {
+        type: String,
+        required: true,
+        unique: true
+    },
     menuItems: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Product",
-            required: true
+            productId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Product",
+                required: true
+            },
+            quantity: {
+                type: Number,
+                required: true,
+                min: 1,
+                default: 1
+            }
         }
     ],
     customer: {
@@ -17,7 +30,7 @@ const orderSchema = new mongoose.Schema({
     served_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        // required: true
     },
     tip: {
         type: Number,

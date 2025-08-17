@@ -79,6 +79,9 @@ const MESSAGE = {
     // Error message for Orers Model
     ENTER_VALID_DISCOUNT: "Please enter discount between 0-100 percent",
 
+    // get staff  by roles
+    SERVANT_LIST_FETCH_SUCCESS: "Servant staff list fetched successfully.",
+    SERVANT_LIST_NOT_FOUND: "Please Add Servant Staff"
 };
 
 export default MESSAGE;

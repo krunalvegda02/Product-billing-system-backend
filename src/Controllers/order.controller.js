@@ -13,35 +13,71 @@ const createOrder = asyncHandler(async (req, res) => {
         menuItems,
         customer,
         served_by,
-        tip,
-        referral,
-        discount,
-        paymentId,
+        tip = 0,
+        referral = "",
+        discount = 0,
+        paymentId = "",
         paymentMethod,
-        status,
+        status = "Pending",
     } = req.body;
 
-    if (!Array.isArray(menuItems) || menuItems.length === 0 || !customer || !served_by || !paymentMethod || !status) {
-        throw new ApiError(400, MESSAGE.ALL_FIELDS_MUST_REQUIRED);
+    // 1. Validation
+    if (!Array.isArray(menuItems) || menuItems.length === 0) {
+        throw new ApiError(400, MESSAGE.MENU_ITEMS_REQUIRED);
+    }
+    if (!customer) {
+        throw new ApiError(400, MESSAGE.CUSTOMER_REQUIRED);
+    }
+    if (!paymentMethod) {
+        throw new ApiError(400, MESSAGE.PAYMENT_METHOD_REQUIRED);
     }
 
-    const products = await Product.find({ _id: { $in: menuItems } });
+    // 2. Extract product IDs
+    const productIds = menuItems.map(item => item.productId);
 
+    // 3. Fetch product details
+    const products = await Product.find({ _id: { $in: productIds } });
+
+    if (products.length !== menuItems.length) {
+        throw new ApiError(400, MESSAGE.INVALID_PRODUCT);
+    }
+
+    // 4. Calculate totals with discounts
     let Total = 0;
     const productWithDiscount = products.map(product => {
         let discountedPrice = product.price;
+
         if (product.isDiscountActive && product.ActiveDiscount > 0) {
             discountedPrice -= (product.price * product.ActiveDiscount) / 100;
         }
-        Total += discountedPrice;
+
+        const matchedItem = menuItems.find(
+            item => item.productId.toString() === product._id.toString()
+        );
+        const quantity = matchedItem ? matchedItem.quantity : 1;
+
+        const totalItemPrice = discountedPrice * quantity;
+        Total += totalItemPrice;
+
+
+
         return {
             _id: product._id,
             name: product.name,
             originalPrice: product.price,
-            discountedPrice: parseFloat(discountedPrice.toFixed(2))
+            discountedPrice: parseFloat(discountedPrice.toFixed(2)),
+            quantity,
+            totalItemPrice: parseFloat(totalItemPrice.toFixed(2)),
         };
     });
 
+    // 5. Apply referral/discount if applicable
+    if (discount > 0) {
+        Total -= (Total * discount) / 100;
+    }
+    if (Total < 0) Total = 0;
+
+    // 6. Save order
     const order = await Order.create({
         menuItems,
         customer,
@@ -54,8 +90,11 @@ const createOrder = asyncHandler(async (req, res) => {
         status
     });
 
-    if (!order) throw new ApiError(500, MESSAGE.ORDER_CREATE_FAILED);
+    if (!order) {
+        throw new ApiError(500, MESSAGE.ORDER_CREATE_FAILED);
+    }
 
+    // 7. Populate customer & served_by
     const savedOrder = await Order.findById(order._id)
         .populate("customer", "name email contact avatar")
         .populate("served_by", "name email contact avatar")
@@ -63,8 +102,17 @@ const createOrder = asyncHandler(async (req, res) => {
 
     savedOrder.menuItems = productWithDiscount;
 
-    return res.status(201).json(new ApiResponse(201, { savedOrder, Total }, MESSAGE.ORDER_CREATE_SUCCESS));
+    // 8. Response
+    return res.status(201).json(
+        new ApiResponse(
+            201,
+            { savedOrder, Total: parseFloat(Total.toFixed(2)) },
+            MESSAGE.ORDER_CREATE_SUCCESS
+        )
+    );
 });
+
+
 
 
 
@@ -229,7 +277,7 @@ const deleteOrder = asyncHandler(async (req, res) => {
 
 
 /**
- * Get all orders with pagination
+ * Get all orders with pagination  WHICH STATUS IS COMPLETED
  */
 const getAllOrders = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, sortType = "desc", sortBy = "createdAt" } = req.query;
@@ -246,14 +294,14 @@ const getAllOrders = asyncHandler(async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const orders = await Order.find()
+    const orders = await Order.find({ status: { $ne: "Completed" } })
         .sort(sortOptions)
         .skip(skip)
         .limit(parseInt(limit))
-        .populate("customer", "name email contact avatar")
-        .populate("served_by", "name email contact avatar")
+        .populate("customer", "username email contact avatar")
+        .populate("served_by", "username email contact avatar")
         .populate({
-            path: "menuItems",
+            path: "menuItems.productId",
             populate: {
                 path: "categoryOfProduct",
                 select: "categoryName categoryThumbnail",
@@ -271,6 +319,9 @@ const getAllOrders = asyncHandler(async (req, res) => {
         orders,
     }, MESSAGE.DATA_FETCHED_SUCCESS));
 });
+
+
+
 
 export {
     createOrder,
