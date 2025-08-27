@@ -3,7 +3,7 @@ import { Order, Product } from "../Models/index.js";
 import { ApiError } from "../Utils/ApiError.js";
 import { ApiResponse } from "../Utils/ApiResponse.js";
 import { asyncHandler } from "../Utils/AsyncHandler.js";
-
+import { io } from "../index.js";
 
 /**
  * Create a new order
@@ -129,7 +129,16 @@ const createOrder = asyncHandler(async (req, res) => {
 
     savedOrder.menuItems = productWithDiscount;
 
-    // 8. Response
+    // 8. Emit socket event for real-time kitchen update
+    console.log("Socket instance:", io);
+    if (!io) {
+        console.error("⚠ Socket.io instance not found in req.app");
+    } else {
+        io.emit("new-order", savedOrder);
+        console.log("✅ Emitted new-order event");
+    }
+
+    // 9. Response
     return res.status(201).json(
         new ApiResponse(
             201,
