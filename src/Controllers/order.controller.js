@@ -130,9 +130,9 @@ const createOrder = asyncHandler(async (req, res) => {
     savedOrder.menuItems = productWithDiscount;
 
     // 8. Emit socket event for real-time kitchen update
-    console.log("Socket instance:", io);
+    // console.log("Socket instance:", io);
     if (!io) {
-        console.error("⚠ Socket.io instance not found in req.app");
+        console.error("⚠ Socket.io instance not found!");
     } else {
         io.emit("new-order", savedOrder);
         console.log("✅ Emitted new-order event");
