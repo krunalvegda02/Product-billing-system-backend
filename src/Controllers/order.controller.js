@@ -134,6 +134,8 @@ const createOrder = asyncHandler(async (req, res) => {
     if (!io) {
         console.error("⚠ Socket.io instance not found!");
     } else {
+
+        // TODO: inspite of sending complete orders just send new order
         io.emit("new-order", savedOrder);
         console.log("✅ Emitted new-order event");
     }
@@ -150,6 +152,7 @@ const createOrder = asyncHandler(async (req, res) => {
         )
     );
 });
+
 
 
 

@@ -52,7 +52,7 @@ const refreshAccessToken = asyncHandler(
 
       const options = {
         httpOnly: true,
-        secure: true,
+        // secure: true,
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
       };
 
@@ -110,7 +110,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    // secure: true,
     sameSite: 'Strict',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   };
@@ -181,7 +181,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   //delete secure cookies
   const options = {
     httpOnly: true,
-    secure: true,
+    // secure: true,
   };
 
   return res

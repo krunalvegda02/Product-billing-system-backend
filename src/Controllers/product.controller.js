@@ -220,21 +220,33 @@ const getProductById = asyncHandler(async (req, res) => {
 })
 
 const getUserLikedProducts = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
+  const userId = req.user._id;
 
-    const products = await Product.find({ likedBy: userId });
-    if (!products || products.length === 0) {
-        return res.status(404).json(new ApiResponse(404, [], MESSAGE.PRODUCT_NOT_FOUND));
-    }
+  const products = await Product.find({ likedBy: userId })
+    .populate({
+      path: "categoryOfProduct",   
+      select: "categoryName",              
+    });
 
-    return res.status(200).json(new ApiResponse(200, products, MESSAGE.DATA_FETCHED_SUCCESS));
-})
+  if (!products || products.length === 0) {
+    return res
+      .status(404)
+      .json(new ApiResponse(404, [], MESSAGE.PRODUCT_NOT_FOUND));
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, products, MESSAGE.DATA_FETCHED_SUCCESS));
+});
+
 
 const togglelikeProduct = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-    const { productId } = req.params;
+    const { id } = req.params;
 
-    const product = await Product.findById(productId);
+    const product = await Product.findById(id);
+    // console.log("prodtc", product);
+
     if (!product) throw new ApiError(404, MESSAGE.PRODUCT_NOT_FOUND);
 
     // Check if the user has already liked the product
@@ -246,6 +258,8 @@ const togglelikeProduct = asyncHandler(async (req, res) => {
         // If not liked, add the user to likedBy
         product.likedBy.push(userId);
     }
+    await product.save();
+
 
     return res.status(200).json(new ApiResponse(200, product, alreadyLiked ? MESSAGE.PRODUCT_UNLIKED_SUCCESS : MESSAGE.PRODUCT_LIKED_SUCCESS));
 })

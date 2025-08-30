@@ -6,9 +6,12 @@ import User from "../Models/user.model.js";
 
 const verifyJWT = asyncHandler(async (req, res, next) => {
     try {
+        console.log("Cookies:", req.cookies);
         const token =
             req.cookies?.accessToken ||
             req.header("Authorization")?.replace("Bearer ", "");
+
+        console.log(token);
 
         if (!token) {
             throw new ApiError(401, "Unauthorized request");
@@ -16,7 +19,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
 
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-        const user = await User.findOne({_id: decodedToken?._id}).select(
+        const user = await User.findOne({ _id: decodedToken?._id }).select(
             "-password -refreshToken"
         );
         if (!user) throw new ApiError(403, "Invalid Credentials")
