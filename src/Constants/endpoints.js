@@ -3,6 +3,7 @@ const ROUTE = {
     PRODUCT_ROUTER: "/api/v1/products",
     CATEGORY_ROUTER: "/api/v1/category",
     ORDER_ROUTER: "/api/v1/order",
+    FEEDBACK_ROUTER: "/api/v1/feedback"
 };
 
 const API = {
@@ -24,11 +25,12 @@ const API = {
         CREATE_PRODUCT: "/create",
         DELETE_PRODUCT: "/delete/:id",
         UPDATE_PRODUCT: "/update/:id",
-        GET_PRODUCTBY_ID: "/:id",
         GET_PRODUCTBY_CATEGORY: "/category/:categoryId",
 
         TOGGLE_LIKE_PRODUCT: "/toggle-like/:id",
-        GET_LIKED_PRODUCTS: "/liked-products"
+        GET_LIKED_PRODUCTS: "/liked-products",
+
+        GET_PRODUCTBY_ID: "/:id",
     },
     CATEGORY: {
         GET_ALL_CATEGORY: "/",
@@ -47,6 +49,12 @@ const API = {
         CANCEL_ORDER: "/cancel/:id",
         UPDATE_ORDER_STATUS_BY_STAFF: "/update-status/:id",
         UPDATE_ORDER_STATUS_BY_CUSTOMER: "/update-status-customer/:id"
+    },
+    FEEDBACK: {
+        ADD_FEEDBACK: "/",
+        GET_ALL_FEEDBACK: "/all-feedback",
+        DELETE_FEEDBACK: "/delete/:id",
+        GET_FEEDBACK_ID: "/:id",
     }
 };
 

@@ -24,7 +24,8 @@ import {
   userRouter,
   categoryRouter,
   productRouter,
-  orderRouter
+  orderRouter,
+  feedbackRouter
 } from "./Routes/index.js"
 
 import { ROUTE } from "./Constants/endpoints.js"
@@ -34,5 +35,6 @@ app.use(ROUTE.USER_ROUTER, userRouter);
 app.use(ROUTE.CATEGORY_ROUTER, categoryRouter);
 app.use(ROUTE.PRODUCT_ROUTER, productRouter);
 app.use(ROUTE.ORDER_ROUTER, orderRouter);
+app.use(ROUTE.FEEDBACK_ROUTER, feedbackRouter)
 
 export default app;
