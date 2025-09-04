@@ -1,9 +1,15 @@
 import mongoose from "mongoose";
 
+
+
+// ! THIS MODEL IS NOT NEEDED, USE AGGREGATION
+
+
+
 const DashboardSchema = new mongoose.Schema({
   date: {
     type: Date,
-    default: Date.now, // store week date (you can save start of week)
+    default: Date.now,
   },
 
   revenue: {

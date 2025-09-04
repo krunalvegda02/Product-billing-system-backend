@@ -3,23 +3,29 @@ const ROUTE = {
     PRODUCT_ROUTER: "/api/v1/products",
     CATEGORY_ROUTER: "/api/v1/category",
     ORDER_ROUTER: "/api/v1/order",
-    FEEDBACK_ROUTER: "/api/v1/feedback"
+    DASHBOARD_ROUTER: "/api/v1/dashboard",
+    FEEDBACK_ROUTER: "/api/v1/feedback",
+    BILLING_ROUTER: "/api/v1/billing"
 };
 
 const API = {
     USER: {
         REGISTER: "/register",
-        CREATE_USER: "/create-user",
         LOGIN: "/login",
         LOGOUT: '/logout',
         CHANGE_PASSWORD: "/change-password",
         UPDATE_PROFILE: "/update-profile",
         UPDATE_AVATAR: "/update-avatar",
         REFRESH_TOKEN: "/refresh-token",
-        GET_STAFF_MEMBERS: "/get-staff",
         CURRENT_USER: "/me",
-        GET_SERVANT_STAFF: "/get_servant_staff"
+
+        GET_SERVANT_STAFF: "/get-servant-staff",
+        GET_STAFF_MEMBERS: "/get-staff",
+        CREATE_STAFF: "/create-staff",
+        DELETE_STAFF: "/delete-staff/:id",
+        UPDATE_STAFF: "/update-staff/:id",
     },
+
     PRODUCT: {
         GET_ALL_PRODUCTS: "/all",
         CREATE_PRODUCT: "/create",
@@ -32,6 +38,8 @@ const API = {
 
         GET_PRODUCTBY_ID: "/:id",
     },
+
+
     CATEGORY: {
         GET_ALL_CATEGORY: "/",
         CREATE_CATEGORY: "/create",
@@ -39,6 +47,8 @@ const API = {
         UPDATE_CATEGORY: "/update/:id",
         GET_CATEGORYBY_ID: "/:id"
     },
+
+
     ORDER: {
         GET_ALL_ORDER: "/",
         CREATE_ORDER: "/create",
@@ -50,12 +60,27 @@ const API = {
         UPDATE_ORDER_STATUS_BY_STAFF: "/update-status/:id",
         UPDATE_ORDER_STATUS_BY_CUSTOMER: "/update-status-customer/:id"
     },
+
+
     FEEDBACK: {
         ADD_FEEDBACK: "/",
         GET_ALL_FEEDBACK: "/all-feedback",
         DELETE_FEEDBACK: "/delete/:id",
         GET_FEEDBACK_ID: "/:id",
+    },
+
+
+    DASHBOARD: {
+        GET_DASHBOARD_DATA: "/",
+        GET_DASHBOARD_ORDERS: "/orders"
+    },
+
+    BILLING: {
+        GET_BILLING_DATA: "/bills",
+        GET_INVOICE_DETAILS: "/invoice/:orderId",
+        GET_BILLING_SUMMARY: "/summary"
     }
 };
+
 
 export { API, ROUTE };

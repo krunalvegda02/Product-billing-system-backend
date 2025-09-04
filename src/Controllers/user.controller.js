@@ -277,51 +277,9 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, req.user, MESSAGE.DATA_FETCHED_SUCCESS));
 })
 
-// Create user by admin
-const createUserByAdmin = asyncHandler(async (req, res) => {
-  const { username, email, contact, password, role } = req.body;
-  if (!username && email && !password && !role & !contact) throw new ApiError(401, MESSAGE.ALL_FIELDS_MUST_REQUIRED);
-
-  const user = await User.create({ username, email, password, role, contact });
-  if (!user) throw new ApiError(400, MESSAGE.USER_REGISTER_FAILED);
-
-  return res.status(200).json(new ApiResponse(200, user, MESSAGE.USER_REGISTER_SUCCESS));
-})
 
 
 
-
-
-// Get all staff members (managers and waiters)
-const getAllStaffMembers = asyncHandler(async (req, res) => {
-  const waiters = await User.find({ role: "WAITER" }).select("-password -refreshToken");
-  const managers = await User.find({ role: "MANAGER" }).select("-password -refreshToken");
-
-  if (!waiters.length && !managers.length) {
-    throw new ApiError(404, MESSAGE.STAFFMEMBERS_FETCH_FAILED);
-  }
-
-  return res.status(200).json(
-    new ApiResponse(
-      200,
-      { waiters, managers },
-      MESSAGE.STAFFMEMBERS_FETCH_SUCCESS
-    )
-  );
-})
-
-
-
-// Get servant staff list
-const getServentStaffList = asyncHandler(async (req, res) => {
-
-  const servantStaff = await User.find({ role: "WAITER" });
-  if (!servantStaff || servantStaff.length === 0) {
-    return res.status(404).json(new ApiResponse(404, null, MESSAGE.SERVANT_LIST_NOT_FOUND));
-  }
-
-  return res.status(200).json(new ApiResponse(200, servantStaff, MESSAGE.SERVANT_LIST_FETCH_SUCCESS));
-})
 
 
 
@@ -335,7 +293,4 @@ export {
   getCurrentUser,
   userAvatarUpdate,
   changeCurrentPassword,
-  createUserByAdmin,
-  getAllStaffMembers,
-  getServentStaffList
 }

@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength:4,
-      maxlength:10,
+      // maxlength:10,
     },
     role: {
       type: String,

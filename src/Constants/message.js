@@ -81,7 +81,9 @@ const MESSAGE = {
 
     // get staff  by roles
     SERVANT_LIST_FETCH_SUCCESS: "Servant staff list fetched successfully.",
-    SERVANT_LIST_NOT_FOUND: "Please Add Servant Staff"
+    SERVANT_LIST_NOT_FOUND: "Please Add Servant Staff",
+    STAFF_UPDATE_SUCCESS: "Staff updated successfully.",
+    STAFF_DELETE_SUCCESS: "Staff deleted successfully."
 };
 
 export default MESSAGE;

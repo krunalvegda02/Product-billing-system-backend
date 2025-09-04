@@ -7,20 +7,17 @@ import { Feedback } from "../Models/feedback.model.js";
 // =============================
 const addFeedback = async (req, res) => {
     try {
-        const { rating, comment, category, order, table, isPublic } = req.body;
+        const { rating, comment, order } = req.body;
 
-        if (!rating) {
-            return res.status(400).json({ message: "Rating is required" });
+        if (!rating || !comment) {
+            return res.status(400).json({ message: "Rating and comment are required" });
         }
 
         const feedback = await Feedback.create({
-            user: req.user ? req.user._id : null, // if logged in, else null
-            order,
-            table,
+            user: req.user ? req.user._id : null, // requires auth middleware
+            order: order || null,
             rating,
             comment,
-            category,
-            isPublic,
         });
 
         res.status(201).json({
@@ -40,9 +37,9 @@ const addFeedback = async (req, res) => {
 const getAllFeedback = async (req, res) => {
     try {
         const feedback = await Feedback.find()
-            .populate("user", "name email") // if user is linked
-            .populate("order", "orderNumber totalAmount")
-            .populate("table", "tableNumber");
+            .populate("user", "username email Avatar")
+            // .populate("order", "orderId")
+            .sort({ createdAt: -1 });
 
         res.json(feedback);
     } catch (error) {
@@ -51,7 +48,7 @@ const getAllFeedback = async (req, res) => {
 };
 
 // =============================
-// @desc    Get feedback for a specific order/table/user
+// @desc    Get feedback by ID
 // @route   GET /api/feedback/:id
 // @access  Admin/User
 // =============================
@@ -59,8 +56,7 @@ const getFeedbackById = async (req, res) => {
     try {
         const feedback = await Feedback.findById(req.params.id)
             .populate("user", "name email")
-            .populate("order", "orderNumber")
-            .populate("table", "tableNumber");
+            .populate("order", "orderNumber totalAmount");
 
         if (!feedback) {
             return res.status(404).json({ message: "Feedback not found" });
@@ -71,8 +67,6 @@ const getFeedbackById = async (req, res) => {
         res.status(500).json({ message: "Error fetching feedback", error: error.message });
     }
 };
-
-
 
 // =============================
 // @desc    Delete feedback
@@ -93,11 +87,9 @@ const deleteFeedback = async (req, res) => {
     }
 };
 
-
-
 export {
     addFeedback,
     getAllFeedback,
     getFeedbackById,
     deleteFeedback,
-}
+};

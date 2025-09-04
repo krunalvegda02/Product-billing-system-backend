@@ -4,4 +4,4 @@ export { default as productRouter } from './product.route.js';
 export { default as userRouter } from './user.route.js';
 export { default as feedbackRouter} from "./Feedback.route.js"
 export { default as dashboardRouter} from "./dashboard.route.js"
-    
+export { default as billingRouter} from "./billing.route.js"

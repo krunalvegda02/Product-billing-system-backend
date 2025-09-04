@@ -7,13 +7,18 @@ import { deleteFromCloudinary, extractPublicIdFromUrl, uploadOnCloudinary } from
 
 const createProduct = asyncHandler(async (req, res) => {
     const { name, description, price, inStock, categoryOfProduct, isDiscountActive, ActiveDiscount } = req.body;
+   
+    console.log(req.body);
+    console.log(req.file );
+    
+    
     const thumbnail = req.file;
-    console.log(thumbnail, req.body);
+    // console.log(thumbnail, req.body);
 
 
     if (
         !name || !description || !price || !inStock ||
-        !Array.isArray(categoryOfProduct) || categoryOfProduct.length === 0 || !thumbnail
+ !categoryOfProduct || !thumbnail
     ) {
         throw new ApiError(400, MESSAGE.ALL_FIELDS_MUST_REQUIRED);
     }
@@ -45,6 +50,7 @@ const createProduct = asyncHandler(async (req, res) => {
 })
 
 const updateProduct = asyncHandler(async (req, res) => {
+    
     const { name, description, price, inStock, categoryOfProduct, isDiscountActive, ActiveDiscount } = req.body;
     const thumbnail = req.file;
     const { id } = req.params;
