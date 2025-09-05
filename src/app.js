@@ -27,7 +27,8 @@ import {
   orderRouter,
   feedbackRouter,
   dashboardRouter,
-  billingRouter
+  billingRouter,
+  paymentRouter
 } from "./Routes/index.js"
 
 import { ROUTE } from "./Constants/endpoints.js"
@@ -40,5 +41,6 @@ app.use(ROUTE.ORDER_ROUTER, orderRouter);
 app.use(ROUTE.DASHBOARD_ROUTER, dashboardRouter);
 app.use(ROUTE.FEEDBACK_ROUTER, feedbackRouter);
 app.use(ROUTE.BILLING_ROUTER, billingRouter);
+app.use("/api/v1/payments", paymentRouter);
 
 export default app;
