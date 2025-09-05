@@ -5,7 +5,7 @@ const ROUTE = {
     ORDER_ROUTER: "/api/v1/order",
     DASHBOARD_ROUTER: "/api/v1/dashboard",
     FEEDBACK_ROUTER: "/api/v1/feedback",
-    BILLING_ROUTER: "/api/v1/billing"
+    BILLING_ROUTER: "/api/v1/billing",  
 };
 
 const API = {

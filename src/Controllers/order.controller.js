@@ -38,24 +38,8 @@ const createOrder = asyncHandler(async (req, res) => {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // Find the last order of the day
-    const lastOrder = await Order.findOne({
-        createdAt: {
-            $gte: today,
-            $lt: tomorrow
-        }
-    }).sort({ orderId: -1 });
-    let orderNumber = 1
-
-    if (lastOrder && lastOrder.orderId) {
-        // Extract number from last order ID (ORD-123 → 123)
-        const lastNumber = parseInt(lastOrder.orderId.split('-')[1], 10);
-        if (!isNaN(lastNumber)) {
-            orderNumber = lastNumber + 1;
-        }
-    }
-    const orderId = `ORD-${orderNumber}`;
-
+   
+   const orderId = `ORD-${Date.now()}`;
 
     // 2. Extract product IDs
     const productIds = menuItems.map(item => item.productId);
